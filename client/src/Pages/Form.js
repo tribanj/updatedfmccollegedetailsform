@@ -56,7 +56,7 @@ const UniversityForm = () => {
 
     try {
       const response = await axios.post(
-        "https://your-api-url.com/api/universities",
+        "https://updatedfmccollegedetailsform-3.onrender.com/api/universities", // Update the URL
         formData,
         {
           headers: {
