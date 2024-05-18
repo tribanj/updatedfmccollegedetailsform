@@ -12,7 +12,7 @@
 // mongoose
 //   .connect(
 //     "mongodb+srv://tribhuwanja:9doa4xtYeWAvQpAn@cluster0.ijgu1jf.mongodb.net/FindMyCollege",
-//     { 
+//     {
 //       useNewUrlParser: true,
 //       useUnifiedTopology: true,
 //     }
@@ -98,10 +98,10 @@
 
 // // New Code Starts From Here *********************************************************************************************
 
-const express = require('express');
-const mongoose = require('mongoose');
-const multer = require('multer');
-const cors = require('cors');
+const express = require("express");
+const mongoose = require("mongoose");
+const multer = require("multer");
+const cors = require("cors");
 const app = express();
 
 const PORT = process.env.PORT || 3001; // Ensure this is 3001 if it's your backend port
@@ -110,23 +110,26 @@ app.use(cors());
 
 // MongoDB connection
 mongoose
-  .connect('mongodb+srv://tribhuwanja:9doa4xtYeWAvQpAn@cluster0.ijgu1jf.mongodb.net/FindMyCollege', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://tribhuwanja:9doa4xtYeWAvQpAn@cluster0.ijgu1jf.mongodb.net/FindMyCollege",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
-    console.log('Database connected successfully');
+    console.log("Database connected successfully");
   })
   .catch((error) => {
-    console.error('Error connecting to the database: ' + error);
+    console.error("Error connecting to the database: " + error);
   });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
@@ -151,48 +154,64 @@ const universitySchema = new mongoose.Schema({
   prospectusUrl: String,
 });
 
-const University = mongoose.model('University', universitySchema);
+const University = mongoose.model("University", universitySchema);
 
 app.use(express.json());
 
-app.post('/api/universities', upload.fields([{ name: 'courseFeeDetails' }, { name: 'photos' }, { name: 'prospectus' }]), async (req, res) => {
-  try {
-    const photosUrls = req.files['photos'] ? req.files['photos'].map(file => file.path) : [];
-    const courseFeeDetailsUrl = req.files['courseFeeDetails'] ? req.files['courseFeeDetails'][0].path : '';
-    const prospectusUrl = req.files['prospectus'] ? req.files['prospectus'][0].path : '';
+app.post(
+  "/api/universities",
+  upload.fields([
+    { name: "courseFeeDetails" },
+    { name: "photos" },
+    { name: "prospectus" },
+  ]),
+  async (req, res) => {
+    try {
+      const photosUrls = req.files["photos"]
+        ? req.files["photos"].map((file) => file.path)
+        : [];
+      const courseFeeDetailsUrl = req.files["courseFeeDetails"]
+        ? req.files["courseFeeDetails"][0].path
+        : "";
+      const prospectusUrl = req.files["prospectus"]
+        ? req.files["prospectus"][0].path
+        : "";
 
-    const newUniversity = new University({
-      ...req.body,
-      photosUrls,
-      courseFeeDetailsUrl,
-      prospectusUrl,
-    });
+      const newUniversity = new University({
+        ...req.body,
+        photosUrls,
+        courseFeeDetailsUrl,
+        prospectusUrl,
+      });
 
-    await newUniversity.save();
-    res.json(newUniversity);
-  } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while saving the university data.' });
+      await newUniversity.save();
+      res.json(newUniversity);
+    } catch (error) {
+      console.error("An error occurred:", error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while saving the university data." });
+    }
   }
-});
+);
 
-app.get('/api/universities', async (req, res) => {
+app.get("/api/universities", async (req, res) => {
   try {
     const data = await University.find().lean();
     res.json(data);
   } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("An error occurred:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 // Global error handler for unhandled exceptions and rejections
-process.on('unhandledRejection', (error) => {
-  console.error('Unhandled Promise Rejection:', error);
+process.on("unhandledRejection", (error) => {
+  console.error("Unhandled Promise Rejection:", error);
 });
 
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
 });
 
 app.listen(PORT, () => {
