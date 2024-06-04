@@ -388,7 +388,7 @@ const UniversityDetailsForm = () => {
 
     axios.post("https://updatedfmccollegedetailsform-3.onrender.com/api/universities", data)
       .then(response => {
-        console.log(response.data);
+        // console.log(response.data);
         toast.success("Entry Saved")
         setSubmitted(true);
       })
